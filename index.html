@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tabbed Browsing</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Roboto:ital,wght@0,900;1,400&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom CSS for tab interface */
+      .tab-section {
+        background: #eff0f5;
+        padding-bottom: 30px;
+        padding-top: 30px;
+      }
+      .nav-tabs > li.active > a,
+      .nav-tabs > li.active > a:hover,
+      .nav-tabs > li.active > a:focus {
+        background-color: black !important;
+        color: white !important;
+        border: 1px solid black !important;
+        font-family: "Poppins";
+        border-radius: 7px;
+      }
+
+      .nav-tabs > li > a:hover,
+      .nav-tabs > li > a:focus {
+        background-color: black !important;
+        color: white !important;
+        border-radius: 7px;
+      }
+
+      li a {
+        color: black !important;
+        font-family: poppins;
+        font-size: 15px;
+        border: 2px solid #c4c4c4 !important;
+        border-radius: 7px !important;
+        margin: 10px 5px 0px 5px;
+      }
+
+      .tab-content {
+        margin-top: 20px;
+      }
+
+      span.tab-close {
+        margin-left: 10px !important;
+        position: relative;
+        top: -2px;
+        left: 10px;
+        cursor: pointer;
+        border: 1px solid #c4c4c4;
+        border-radius: 100%;
+        padding: 0px 5px;
+        font-size: 13px;
+      }
+
+      .my-tab {
+        border: none !important;
+      }
+
+      .submit-btn {
+        background-color: black;
+        padding: 10px 35px;
+        color: white;
+        cursor: pointer;
+        margin-top: 32px;
+        border: none;
+        font-size: 16px;
+        font-family: "Poppins";
+      }
+
+      .frame-container {
+        border: 1.5px solid #c4c4c4;
+        margin-top: 32px;
+      }
+
+      .my-input {
+        font-family: "Poppins";
+        border: 1px solid #c4c4c4 !important;
+        background: #eff0f5;
+      }
+
+      .add-btn {
+        border: none;
+        font-weight: bold;
+        font-size: 16px;
+        background-color: black;
+        color: white;
+        padding: 4px 13px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid tab-section">
+      <div class="container mt-5 tab-container">
+        <div class="">
+          <ul class="nav nav-tabs my-tab" id="myTabs">
+            <li class="active">
+              <a href="#content-1" data-toggle="tab" aria-expanded="true"
+                >Tab 1 <span class="tab-close">x</span></a
+              >
+            </li>
+          </ul>
+          <div class="text-center mt-3">
+            <button class="add-btn" id="add-tab">+</button>
+          </div>
+        </div>
+        <div class="tab-content">
+          <div class="tab-pane fade active in" id="content-1">
+            <input
+              type="text"
+              id="url-input-1"
+              class="form-control mb-2 my-input"
+              placeholder="Enter URL"
+            />
+            <button class="submit-btn" onclick="loadPage(1)">Submit</button>
+            <iframe
+              id="iframe-1"
+              width="100%"
+              height="400px"
+              class="frame-container"
+              src=""
+            ></iframe>
+          </div>
+        </div>
+        <!-- + Button -->
+        <!-- <div class="text-center mt-3">
+                <button class="add-btn" id="add-tab">+</button>
+            </div> -->
+      </div>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script>
+      // Model
+      const tabs = [];
+
+      // View
+      function createTab(tabId) {
+        $("#myTabs").append(`<li>
+                              <a href="#content-${tabId}" data-toggle="tab">Tab ${tabId} <span class="tab-close" onclick="closeTab(${tabId})">x</span></a>
+                            </li>`);
+        $(".tab-content")
+          .append(`<div class="tab-pane fade" id="content-${tabId}">
+                                    <input type="text" id="url-input-${tabId}" class="form-control mb-2 my-input" placeholder="Enter URL">
+                                    <button class="submit-btn" onclick="loadPage(${tabId})">Submit</button>
+                                    <iframe id="iframe-${tabId}" width="100%" height="400px" class="frame-container"></iframe>
+                                </div>`);
+      }
+
+      function closeTab(tabId) {
+        $(`#content-${tabId}`).remove();
+        $(`[href="#content-${tabId}"]`).parent().remove();
+        const index = tabs.indexOf(tabId);
+        if (index !== -1) {
+          tabs.splice(index, 1);
+        }
+      }
+
+      // Controller
+      $(document).ready(function () {
+        let tabCount = 1;
+
+        // Create new tab when clicking the "+" button
+        $("#add-tab").click(function () {
+          const newTabId = ++tabCount;
+          tabs.push(newTabId);
+          createTab(newTabId);
+        });
+
+        // Load URL in iframe
+        window.loadPage = function (tabId) {
+          const url = $(`#url-input-${tabId}`).val();
+          $(`#iframe-${tabId}`).attr("src", url);
+        };
+      });
+    </script>
+  </body>
+</html>
